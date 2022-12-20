@@ -1,7 +1,7 @@
 from ase.build import molecule
-from sparc.sparc_core import sparc
+from sparc.sparc_core import SPARC
 
-def make_sparc_calc():
+def make_sparc_calc(directory='.', label='sparc-calc'):
     return SPARC(
         KPOINT_GRID=[1, 1, 1],
         h=0.2,
@@ -24,8 +24,8 @@ def make_sparc_calc():
         # if the radial order is 2,
         # 0, 1, 2 for 0 and 1 order
 
-        directory='.',
-        label='sparc-calc',
+        directory=directory,
+        label=label,
     )
 
 def make_atoms(positions=None):
@@ -36,10 +36,10 @@ def make_atoms(positions=None):
     return atoms
 
 def write_input_files(positions=None, directory='.', label='sparc-calc'):
-    calc = make_sparc_calc()
+    calc = make_sparc_calc(directory, label)
     atoms = make_atoms(positions)
     atoms.set_calculator(calc)
-    calc.write_input(directory=directory, label=label)
+    calc.write_input()
 
 def main():
     write_input_files()
