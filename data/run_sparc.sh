@@ -1,4 +1,4 @@
-#PBS -l nodes=1:ppn=1
+#PBS -l nodes=8:ppn=1
 #PBS -l walltime=3:00:00
 #PBS -N molecule
 #PBS -o stdout
@@ -7,4 +7,5 @@
 cd $PBS_O_WORKDIR
 source ~/.bashrc
 module load intel/19.0.5
-mpirun -np $PBS_NP /storage/home/hcoda1/6/rbhagat8/data/dev_SPARC/lib/sparc -name sparc-calc
+cd $1
+mpirun -np $PBS_NP /storage/home/hcoda1/6/rbhagat8/data/dev_SPARC/lib/sparc -name $2
