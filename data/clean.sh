@@ -1,2 +1,2 @@
 rm *.inpt *.ion *.pot
-rm *.out* *.static* *.csv* std*
+rm *.out* *.static* *.csv* std* *.dens*
