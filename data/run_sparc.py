@@ -19,6 +19,8 @@ def run_sparc(directory='.', label='sparc-calc', user='rbhagat8'):
 
         while len(last_line) == 0:
             idx += 1
+            if idx < -len(lines):
+                return "no name yet", "None"
             last_line = lines[-idx]
 
         splt = last_line.split(' ')
