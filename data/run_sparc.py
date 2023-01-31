@@ -1,7 +1,7 @@
 import subprocess
 import time
 
-def run_sparc(directory='.', label='.', user='rbhagat8'):
+def run_sparc(directory='.', label='sparc-calc', user='rbhagat8'):
 
     def get_process_status_output():
         command_output = subprocess.Popen(
