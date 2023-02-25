@@ -44,3 +44,6 @@ def write_input_files(directory=".", label="sparc-calc", atoms=None):
     calc.write_input()
     if directory is not '.':
         os.system(f'mv *.inpt *.ion *.pot {directory}')
+
+if __name__ == "__main__":
+    write_input_files()

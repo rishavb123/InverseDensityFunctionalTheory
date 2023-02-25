@@ -1,47 +1,59 @@
 import subprocess
 import time
 
-def run_sparc(directory='.', label='sparc-calc', user='rbhagat8'):
 
+def run_sparc(directory=".", label="sparc-calc", user="rbhagat8"):
     def get_process_status_output():
-        command_output = subprocess.Popen(
-            f'qstat -u {user}',
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            shell=True,
-            cwd=directory
-        ).communicate()[0].decode('utf-8')
+        command_output = (
+            subprocess.Popen(
+                f"squeue -u {user}",
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                shell=True,
+                cwd=directory,
+            )
+            .communicate()[0]
+            .decode("utf-8")
+        )
 
-        lines = command_output.split('\n')
+        lines = command_output.split("\n")
 
-        last_line = ''
-        idx = 0
+        for line in lines:
+            if len(line) == 0:
+                continue
+            splt = line.split(" ")
+            splt = [s for s in splt if len(s) > 0]
 
-        while len(last_line) == 0:
-            idx += 1
-            if idx < -len(lines):
-                return "no name yet", "None"
-            last_line = lines[-idx]
+            names = "JOBID PARTITION NAME USER ST TIME NODES NODELIST(REASON)".lower().split(" ")
 
-        splt = last_line.split(' ')
-        splt = [s for s in splt if len(s) > 0]
-
-        return splt[0], splt[9]
-
-    last_proc_name, _ = get_process_status_output()
+            props = {k:v for k,v in zip(names, splt)}
+        
+            if "RunDevSparc".startswith(props["name"]):
+                return props["jobid"], props["st"], props["name"]
+            
+        return "JOBID", "ST", "NAME"
 
     stdout, stderr = subprocess.Popen(
-        f'qsub run_sparc.sh -F {directory} -F {label}',
+        f"sbatch --export=directory={directory},label={label} RunDevSparc.sbatch",
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        shell=True
+        shell=True,
     ).communicate()[:2]
 
-    proc_name, proc_status = get_process_status_output()
-    while proc_name == last_proc_name or proc_status != 'C':
-        proc_name, proc_status = get_process_status_output()
-        print(f'{proc_name}: {proc_status}' + ' ' * 10, end='\r')
+    job_id, _, _ = get_process_status_output()
+
+    while job_id == "JOBID":
+        job_id, proc_status, name = get_process_status_output()
+        print(f"{name} --> {job_id}: {proc_status}" + " " * 10, end="\r")
+        time.sleep(1)
+
+    while job_id != "JOBID":
+        job_id, proc_status, name = get_process_status_output()
+        print(f"{name} --> {job_id}: {proc_status}" + " " * 10, end="\r")
         time.sleep(2)
 
-    return proc_name
+    return job_id
 
+
+if __name__ == "__main__":
+    print(run_sparc())

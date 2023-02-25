@@ -6,6 +6,6 @@
 #PBS -A GT-amedford6-joe
 cd $PBS_O_WORKDIR
 source ~/.bashrc
-module load intel/19.0.5
+module load intel
 cd $1
 mpirun -np $PBS_NP /storage/home/hcoda1/6/rbhagat8/data/dev_SPARC/lib/sparc -name $2
