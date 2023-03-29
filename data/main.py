@@ -45,7 +45,11 @@ def main():
     positions_space = list(itertools.product(pos_space, pos_space, pos_space))
 
     for positions in positions_space:
-        if tuple(positions[0]) == tuple(positions[1]) or tuple(positions[2]) == tuple(positions[1]) or tuple(positions[0]) == tuple(positions[2]):
+        if (
+            tuple(positions[0]) == tuple(positions[1])
+            or tuple(positions[2]) == tuple(positions[1])
+            or tuple(positions[0]) == tuple(positions[2])
+        ):
             continue
         run_for_position(positions=positions)
 
