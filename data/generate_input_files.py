@@ -4,6 +4,15 @@ from ase.build import molecule
 from sparc.sparc_core import SPARC
 
 def make_sparc_calc(directory=".", label="sparc-calc"):
+    """Builds the sparc calc object
+
+    Args:
+        directory (str, optional): The directory to run sparc in. Defaults to ".".
+        label (str, optional): The label to run sparc with. Defaults to "sparc-calc".
+
+    Returns:
+        SPARC: A sparc calculator object
+    """
     return SPARC(
         KPOINT_GRID=[1, 1, 1],
         h=0.2,
@@ -30,6 +39,17 @@ def make_sparc_calc(directory=".", label="sparc-calc"):
 def make_atoms(
     molecule_name="H2O", positions=None, cell=[6, 6, 6], pbc=[False, False, False]
 ):
+    """Creates the molecule object
+
+    Args:
+        molecule_name (str, optional): The molecule name. Defaults to "H2O".
+        positions (list, optional): The list of atomic positions. Defaults to None.
+        cell (list, optional): The cell to contain the molecule in. Defaults to [6, 6, 6].
+        pbc (list, optional): The pbc. Defaults to [False, False, False].
+
+    Returns:
+        molecule: The molecule object
+    """
     atoms = molecule(molecule_name, positions=positions)
     atoms.set_cell(cell)
     atoms.center()
@@ -38,6 +58,13 @@ def make_atoms(
 
 
 def write_input_files(directory=".", label="sparc-calc", atoms=None):
+    """Writes the input files for a specified sparc run
+
+    Args:
+        directory (str, optional): The directory to write to. Defaults to ".".
+        label (str, optional): The label to run sparc with. Defaults to "sparc-calc".
+        atoms (molecule, optional): The molecule object. Defaults to None.
+    """
     calc = make_sparc_calc(directory, label)
     atoms = atoms if atoms is not None else make_atoms()
     atoms.set_calculator(calc)
