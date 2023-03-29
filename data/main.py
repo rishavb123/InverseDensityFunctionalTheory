@@ -8,6 +8,14 @@ from run_sparc import run_sparc
 
 
 def run_pipeline(atoms_kwargs={}, directory=".", label="sparc-calc", user="rbhagat8"):
+    """Runs the full pipeline from generating inputs files and running sparc and generating output files
+
+    Args:
+        atoms_kwargs (dict, optional): The arguments to send to make_atoms. Defaults to {}.
+        directory (str, optional): The directory to save the input files and run sparc in. Defaults to ".".
+        label (str, optional): The label to run sparc with. Defaults to "sparc-calc".
+        user (str, optional): The user to run sparc with. Defaults to "rbhagat8".
+    """
     os.makedirs(directory, exist_ok=True)
     atoms = make_atoms(**atoms_kwargs)
     write_input_files(label=label, atoms=atoms)
@@ -17,6 +25,14 @@ def run_pipeline(atoms_kwargs={}, directory=".", label="sparc-calc", user="rbhag
 
 
 def build_str(positions):
+    """Builds the directory string using atomic positions
+
+    Args:
+        positions (list): The list of three positions (x, y, and z coordinates)
+
+    Returns:
+        str: The built string for the directory
+    """
     stamp = str(int(time.time()))[-5:]
     s = f"{stamp}_"
     for pos in positions:
@@ -25,10 +41,17 @@ def build_str(positions):
 
 
 def run_for_position(molecule_name="H2O", positions=None):
+    """Runs the pipeline given a molecule name and the atomic positions
+
+    Args:
+        molecule_name (str, optional): The molecule name. Defaults to "H2O".
+        positions (list, optional): The atomic positions. Defaults to None.
+    """
+    parent_dir = "/storage/home/hcoda1/6/rbhagat8/p-amedford6-0"
     path = (
-        f"sparc_runs/{molecule_name}/{build_str(positions)}"
+        f"{parent_dir}/sparc_runs/{molecule_name}/{build_str(positions)}"
         if positions is not None
-        else f"sparc_runs/{molecule_name}/default"
+        else f"{parent_dir}/sparc_runs/{molecule_name}/default"
     )
     if os.path.isdir(path):
         os.rmdir(path)
@@ -40,11 +63,12 @@ def run_for_position(molecule_name="H2O", positions=None):
 
 
 def main():
-    dim_space = np.linspace(-1, 1, 3)
-    pos_space = list(itertools.product(dim_space, dim_space, dim_space))
-    positions_space = list(itertools.product(pos_space, pos_space, pos_space))
+    """Runs the sparc pipeline a bunch for many different data points"""
+    N = 100000
 
-    for positions in positions_space:
+    for i in range(N):
+        positions = [np.random.random(3) * 2 - 1 for _ in range(3)]
+
         if (
             tuple(positions[0]) == tuple(positions[1])
             or tuple(positions[2]) == tuple(positions[1])
@@ -52,6 +76,7 @@ def main():
         ):
             continue
         run_for_position(positions=positions)
+        print(f"generated {i + 1}/{N} configurations")
 
 
 if __name__ == "__main__":

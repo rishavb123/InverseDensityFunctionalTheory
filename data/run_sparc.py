@@ -3,6 +3,13 @@ import time
 
 
 def run_sparc(directory=".", label="sparc-calc", user="rbhagat8"):
+    """Runs sparc using a subprocess and the parameters provided
+
+    Args:
+        directory (str, optional): The directory to run sparc in. Defaults to ".".
+        label (str, optional): The label to use for the input and output files. Defaults to "sparc-calc".
+        user (str, optional): The user to run it under (and send emails to). Defaults to "rbhagat8".
+    """
     def get_process_status_output():
         command_output = (
             subprocess.Popen(
