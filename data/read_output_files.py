@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import os
 
 import csv
@@ -5,13 +7,19 @@ import numpy as np
 
 
 class ReadOutputFiles:
-    def __init__(self, path) -> None:
+    def __init__(self, path, validate=True) -> None:
         """Initializes the ReadOutputFiles class
 
         Args:
             path (str): The folder path that includes all the sparc files
+            validate (bool, optional): Whether or not to validate that all the files exist. Defaults to True.
         """
         self.path = path
+        self.valid = True
+        if validate:
+            for fname in ["Converged_exc_density", "feature_0_spin_type_0", "feature_1_spin_type_0", "HSMP_iter_0_spin_0_SH_1_STEP_0.500000_RCUT_0.500000", "xc_potential"]:
+                if not os.path.exists(f"{path}/{fname}.csv"):
+                    self.valid = False
 
     @staticmethod
     def __read_csv_file(f_path, flattened=False):
@@ -29,10 +37,10 @@ class ReadOutputFiles:
             csv_reader = csv.reader(csv_file, delimiter=",")
             for row in csv_reader:
                 if flattened:
-                    if row[0].isdigit():
+                    if len(row) > 1 and row[0].isdigit():
                         rows.append((int(row[0]), float(row[1])))
                 else:
-                    if row[0].isdigit() and row[1].isdigit() and row[2].isdigit():
+                    if len(row) > 3 and row[0].isdigit() and row[1].isdigit() and row[2].isdigit():
                         rows.append(
                             (int(row[0]), int(row[1]), int(row[2]), float(row[3]))
                         )
@@ -79,9 +87,12 @@ class ReadOutputFiles:
         Returns:
             np.array: The numpy array
         """
-        rows = ReadOutputFiles.__read_csv_file(f"{path}/{f_name}", flattened=flattened)
+        rows = ReadOutputFiles.__read_csv_file(
+            f"{self.path}/{f_name}", flattened=flattened
+        )
         arr = ReadOutputFiles.__convert_rows_file_to_np(rows)
         return arr
+    
 
     def get_converged_exc_density(self):
         """Gets the converged exc density
@@ -126,10 +137,67 @@ class ReadOutputFiles:
         return self.__read_csv_file_np("xc_potential.csv", flattened=True)
 
 
-if __name__ == "__main__":
-    # path = '/storage/home/hcoda1/6/rbhagat8/data/sparc_runs/H2O/72834_-1.0--1.0--1.0_1.0-1.0-0.0_-1.0-0.0-1.0'
-    path = "C:/Users/risha/Downloads/sparc_data"
-    reader = ReadOutputFiles(path)
-    arr = reader.get_converged_exc_density()
+def read_all_data(
+    path="/storage/home/hcoda1/6/rbhagat8/p-amedford6-0/sparc_runs", mol="H2O"
+) -> Tuple[np.array]:
+    """Reads all the data of a specific molecule in a directory
 
-    print(arr[15, 30, 0])
+    Args:
+        path (str, optional): The path to look in. Defaults to "/storage/home/hcoda1/6/rbhagat8/data/sparc_runs/".
+        mol (str, optional): The molecule name. Defaults to "H2O".
+
+    Returns:
+        Tuple[np.array]: The converged_exc_densities, feature_0s, feature_1s, hsmp_iter_0s, and xc_potentials as numpy arrays
+    """
+    path = f"{path}/{mol}"
+    dir_list = os.listdir(path)
+
+    converged_exc_density = []
+    feature_0 = []
+    feature_1 = []
+    hsmp_iter_0 = []
+    xc_potential = []
+
+    for dir_name in dir_list:
+        sparc_run_path = f"{path}/{dir_name}"
+        reader = ReadOutputFiles(sparc_run_path)
+
+        if not reader.valid:
+            continue
+
+        converged_exc_density.append(reader.get_converged_exc_density())
+        feature_0.append(reader.get_feature_0())
+        feature_1.append(reader.get_feature_1())
+        hsmp_iter_0.append(reader.get_hsmp_iter_0())
+        xc_potential.append(reader.get_xc_potential())
+
+    converged_exc_density = np.array(converged_exc_density)
+    feature_0 = np.array(feature_0)
+    feature_1 = np.array(feature_1)
+    hsmp_iter_0 = np.array(hsmp_iter_0)
+    xc_potential = np.array(xc_potential)
+
+    return converged_exc_density, feature_0, feature_1, hsmp_iter_0, xc_potential
+
+
+if __name__ == "__main__":
+    # path = "/storage/home/hcoda1/6/rbhagat8/data/sparc_runs/H2O/72834_-1.0--1.0--1.0_1.0-1.0-0.0_-1.0-0.0-1.0"
+    # # path = "C:/Users/risha/Downloads/sparc_data"
+    # reader = ReadOutputFiles(path)
+    # arr = reader.get_converged_exc_density()
+
+    # print(arr[15, 30, 0])
+
+    (
+        converged_exc_density,
+        feature_0,
+        feature_1,
+        hsmp_iter_0,
+        xc_potential,
+    ) = read_all_data()
+
+    print(converged_exc_density.shape)
+    print(feature_0.shape)
+    print(feature_1.shape)
+    print(hsmp_iter_0.shape)
+    print(xc_potential.shape)
