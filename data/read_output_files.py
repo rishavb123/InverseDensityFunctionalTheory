@@ -5,6 +5,7 @@ import os
 import csv
 import numpy as np
 
+import tqdm
 
 class ReadOutputFiles:
     def __init__(self, path, validate=True) -> None:
@@ -17,7 +18,13 @@ class ReadOutputFiles:
         self.path = path
         self.valid = True
         if validate:
-            for fname in ["Converged_exc_density", "feature_0_spin_type_0", "feature_1_spin_type_0", "HSMP_iter_0_spin_0_SH_1_STEP_0.500000_RCUT_0.500000", "xc_potential"]:
+            for fname in [
+                "Converged_exc_density",
+                "feature_0_spin_type_0",
+                "feature_1_spin_type_0",
+                "HSMP_iter_0_spin_0_SH_1_STEP_0.500000_RCUT_0.500000",
+                "xc_potential",
+            ]:
                 if not os.path.exists(f"{path}/{fname}.csv"):
                     self.valid = False
 
@@ -40,7 +47,12 @@ class ReadOutputFiles:
                     if len(row) > 1 and row[0].isdigit():
                         rows.append((int(row[0]), float(row[1])))
                 else:
-                    if len(row) > 3 and row[0].isdigit() and row[1].isdigit() and row[2].isdigit():
+                    if (
+                        len(row) > 3
+                        and row[0].isdigit()
+                        and row[1].isdigit()
+                        and row[2].isdigit()
+                    ):
                         rows.append(
                             (int(row[0]), int(row[1]), int(row[2]), float(row[3]))
                         )
@@ -92,7 +104,6 @@ class ReadOutputFiles:
         )
         arr = ReadOutputFiles.__convert_rows_file_to_np(rows)
         return arr
-    
 
     def get_converged_exc_density(self):
         """Gets the converged exc density
@@ -158,7 +169,9 @@ def read_all_data(
     hsmp_iter_0 = []
     xc_potential = []
 
-    for dir_name in dir_list:
+    print("Loading")
+
+    for dir_name in tqdm.tqdm(dir_list):
         sparc_run_path = f"{path}/{dir_name}"
         reader = ReadOutputFiles(sparc_run_path)
 
@@ -170,6 +183,8 @@ def read_all_data(
         feature_1.append(reader.get_feature_1())
         hsmp_iter_0.append(reader.get_hsmp_iter_0())
         xc_potential.append(reader.get_xc_potential())
+
+    print("Post processing")
 
     converged_exc_density = np.array(converged_exc_density)
     feature_0 = np.array(feature_0)
@@ -195,6 +210,14 @@ if __name__ == "__main__":
         hsmp_iter_0,
         xc_potential,
     ) = read_all_data()
+
+    print("Saving")
+
+    np.save("converged_exc_density", converged_exc_density)
+    np.save("feature_0", feature_0)
+    np.save("feature_1", feature_1)
+    np.save("hsmp_iter_0", hsmp_iter_0)
+    np.save("xc_potential", xc_potential)
 
     print(converged_exc_density.shape)
     print(feature_0.shape)
