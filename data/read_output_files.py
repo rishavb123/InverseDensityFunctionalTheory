@@ -7,6 +7,7 @@ import numpy as np
 
 import tqdm
 
+
 class ReadOutputFiles:
     def __init__(self, path, validate=True) -> None:
         """Initializes the ReadOutputFiles class
@@ -149,19 +150,25 @@ class ReadOutputFiles:
 
 
 def read_all_data(
-    path="/storage/home/hcoda1/6/rbhagat8/p-amedford6-0/sparc_runs", mol="H2O"
+    path="/storage/home/hcoda1/6/rbhagat8/p-amedford6-0/sparc_runs",
+    mol="H2O",
+    ind_s=0,
+    ind_e=-1,
 ) -> Tuple[np.array]:
     """Reads all the data of a specific molecule in a directory
 
     Args:
         path (str, optional): The path to look in. Defaults to "/storage/home/hcoda1/6/rbhagat8/data/sparc_runs/".
         mol (str, optional): The molecule name. Defaults to "H2O".
+        ind_s (int, optional): The start index. Defaults to 0.
+        ind_e (int, optional): The end index. Defaults to None.
 
     Returns:
         Tuple[np.array]: The converged_exc_densities, feature_0s, feature_1s, hsmp_iter_0s, and xc_potentials as numpy arrays
     """
     path = f"{path}/{mol}"
     dir_list = os.listdir(path)
+    dir_list = list(dir_list)[ind_s:ind_e] if ind_e != None else list(dir_list)[ind_s:]
 
     converged_exc_density = []
     feature_0 = []
@@ -203,13 +210,16 @@ if __name__ == "__main__":
 
     # print(arr[15, 30, 0])
 
+    ind_s = 0
+    ind_e = 10000
+
     (
         converged_exc_density,
         feature_0,
         feature_1,
         hsmp_iter_0,
         xc_potential,
-    ) = read_all_data()
+    ) = read_all_data(ind_s=ind_s, ind_e=ind_e)
 
     print("Saving")
 
