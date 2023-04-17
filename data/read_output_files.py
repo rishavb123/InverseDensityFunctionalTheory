@@ -43,20 +43,23 @@ class ReadOutputFiles:
         rows = []
         with open(f_path) as csv_file:
             csv_reader = csv.reader(csv_file, delimiter=",")
-            for row in csv_reader:
-                if flattened:
-                    if len(row) > 1 and row[0].isdigit():
-                        rows.append((int(row[0]), float(row[1])))
-                else:
-                    if (
-                        len(row) > 3
-                        and row[0].isdigit()
-                        and row[1].isdigit()
-                        and row[2].isdigit()
-                    ):
-                        rows.append(
-                            (int(row[0]), int(row[1]), int(row[2]), float(row[3]))
-                        )
+            try:
+                for row in csv_reader:
+                    if flattened:
+                        if len(row) > 1 and row[0].isdigit():
+                            rows.append((int(row[0]), float(row[1])))
+                    else:
+                        if (
+                            len(row) > 3
+                            and row[0].isdigit()
+                            and row[1].isdigit()
+                            and row[2].isdigit()
+                        ):
+                            rows.append(
+                                (int(row[0]), int(row[1]), int(row[2]), float(row[3]))
+                            )
+            except:
+                pass
 
         if flattened:
             full_length = max(row[0] for row in rows)
@@ -210,8 +213,8 @@ if __name__ == "__main__":
 
     # print(arr[15, 30, 0])
 
-    ind_s = 0
-    ind_e = 10000
+    ind_s = 10000
+    ind_e = 20000
 
     (
         converged_exc_density,
