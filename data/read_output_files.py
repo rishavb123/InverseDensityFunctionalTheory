@@ -223,11 +223,11 @@ if __name__ == "__main__":
 
     print("Saving")
 
-    np.save("converged_exc_density", converged_exc_density)
-    np.save("feature_0", feature_0)
-    np.save("feature_1", feature_1)
-    np.save("hsmp_iter_0", hsmp_iter_0)
-    np.save("xc_potential", xc_potential)
+    np.save(f"converged_exc_density_{ind_s}_{ind_e}.npy", converged_exc_density)
+    np.save(f"feature_0_{ind_s}_{ind_e}.npy", feature_0)
+    np.save(f"feature_1_{ind_s}_{ind_e}.npy", feature_1)
+    np.save(f"hsmp_iter_0_{ind_s}_{ind_e}.npy", hsmp_iter_0)
+    np.save(f"xc_potential_{ind_s}_{ind_e}.npy", xc_potential)
 
     print(converged_exc_density.shape)
     print(feature_0.shape)
