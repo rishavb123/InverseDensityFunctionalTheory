@@ -238,8 +238,8 @@ if __name__ == "__main__":
     print(hsmp_iter_0.shape)
     print(xc_potential.shape)
 
-    np.save(f"dataset/converged_exc_density_{ind_s}_{ind_e}.npy", converged_exc_density)
-    np.save(f"dataset/feature_0_{ind_s}_{ind_e}.npy", feature_0)
-    np.save(f"dataset/feature_1_{ind_s}_{ind_e}.npy", feature_1)
-    np.save(f"dataset/hsmp_iter_0_{ind_s}_{ind_e}.npy", hsmp_iter_0)
-    np.save(f"dataset/xc_potential_{ind_s}_{ind_e}.npy", xc_potential)
+    np.save(f"../p-amedford6-0/dataset/converged_exc_density_{ind_s}_{ind_e}.npy", converged_exc_density)
+    np.save(f"../p-amedford6-0/dataset/feature_0_{ind_s}_{ind_e}.npy", feature_0)
+    np.save(f"../p-amedford6-0/dataset/feature_1_{ind_s}_{ind_e}.npy", feature_1)
+    np.save(f"../p-amedford6-0/dataset/hsmp_iter_0_{ind_s}_{ind_e}.npy", hsmp_iter_0)
+    np.save(f"../p-amedford6-0/dataset/xc_potential_{ind_s}_{ind_e}.npy", xc_potential)

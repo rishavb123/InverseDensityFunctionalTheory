@@ -11,11 +11,11 @@ def load_data(ind_s_arr, ind_e_arr):
     shp = (-1, 31, 31, 31)
 
     for ind_s, ind_e in zip(ind_s_arr, ind_e_arr):
-        converged_exc_density = np.load(f"dataset/converged_exc_density_{ind_s}_{ind_e}.npy")
-        feature_0 = np.load(f"dataset/feature_0_{ind_s}_{ind_e}.npy")
-        feature_1 = np.load(f"dataset/feature_1_{ind_s}_{ind_e}.npy")
-        hsmp_iter_0 = np.load(f"dataset/hsmp_iter_0_{ind_s}_{ind_e}.npy")
-        xc_potential = np.load(f"dataset/xc_potential_{ind_s}_{ind_e}.npy")
+        converged_exc_density = np.load(f"../p-amedford6-0/dataset/converged_exc_density_{ind_s}_{ind_e}.npy")
+        feature_0 = np.load(f"../p-amedford6-0/dataset/feature_0_{ind_s}_{ind_e}.npy")
+        feature_1 = np.load(f"../p-amedford6-0/dataset/feature_1_{ind_s}_{ind_e}.npy")
+        hsmp_iter_0 = np.load(f"../p-amedford6-0/dataset/hsmp_iter_0_{ind_s}_{ind_e}.npy")
+        xc_potential = np.load(f"../p-amedford6-0/dataset/xc_potential_{ind_s}_{ind_e}.npy")
 
         converged_exc_density_full.append(converged_exc_density.reshape(shp))
         feature_0_full.append(feature_0.reshape(shp))
