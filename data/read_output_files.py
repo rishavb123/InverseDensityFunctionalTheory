@@ -202,7 +202,13 @@ def read_all_data(
     hsmp_iter_0 = np.array(hsmp_iter_0)
     xc_potential = np.array(xc_potential)
 
-    return converged_exc_density, feature_0, feature_1, hsmp_iter_0, xc_potential
+    return (
+        converged_exc_density.flatten(),
+        feature_0.flatten(),
+        feature_1.flatten(),
+        hsmp_iter_0.flatten(),
+        xc_potential.flatten(),
+    )
 
 
 if __name__ == "__main__":
@@ -213,7 +219,7 @@ if __name__ == "__main__":
 
     # print(arr[15, 30, 0])
 
-    ind_s = 10000
+    ind_s = 15000
     ind_e = 20000
 
     (
@@ -226,14 +232,14 @@ if __name__ == "__main__":
 
     print("Saving")
 
-    np.save(f"converged_exc_density_{ind_s}_{ind_e}.npy", converged_exc_density)
-    np.save(f"feature_0_{ind_s}_{ind_e}.npy", feature_0)
-    np.save(f"feature_1_{ind_s}_{ind_e}.npy", feature_1)
-    np.save(f"hsmp_iter_0_{ind_s}_{ind_e}.npy", hsmp_iter_0)
-    np.save(f"xc_potential_{ind_s}_{ind_e}.npy", xc_potential)
-
     print(converged_exc_density.shape)
     print(feature_0.shape)
     print(feature_1.shape)
     print(hsmp_iter_0.shape)
     print(xc_potential.shape)
+
+    np.save(f"dataset/converged_exc_density_{ind_s}_{ind_e}.npy", converged_exc_density)
+    np.save(f"dataset/feature_0_{ind_s}_{ind_e}.npy", feature_0)
+    np.save(f"dataset/feature_1_{ind_s}_{ind_e}.npy", feature_1)
+    np.save(f"dataset/hsmp_iter_0_{ind_s}_{ind_e}.npy", hsmp_iter_0)
+    np.save(f"dataset/xc_potential_{ind_s}_{ind_e}.npy", xc_potential)
