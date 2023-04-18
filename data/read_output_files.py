@@ -219,8 +219,8 @@ if __name__ == "__main__":
 
     # print(arr[15, 30, 0])
 
-    ind_s = 15000
-    ind_e = 20000
+    ind_s = 5000
+    ind_e = 10000
 
     (
         converged_exc_density,
